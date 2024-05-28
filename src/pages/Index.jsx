@@ -1,15 +1,27 @@
-import { Box, Container, Flex, Heading, HStack, Link, Spacer, Text, VStack, Spinner, Alert, AlertIcon } from "@chakra-ui/react";
-import { useEvents, useAddEvent } from "../integrations/supabase/index.js";
 import { useState } from "react";
+import { Box, Container, Flex, Heading, HStack, Link, Spacer, Text, VStack, Spinner, Alert, AlertIcon, Button, Stack } from "@chakra-ui/react";
+import { useEvents, useAddEvent } from "../integrations/supabase/index.js";
 
 const Index = () => {
   const { data: events, error, isLoading } = useEvents();
   const addEventMutation = useAddEvent();
   const [newEvent, setNewEvent] = useState({ name: "", date: "", description: "", venue_id: 1 });
+  const [currentPage, setCurrentPage] = useState(1);
+  const eventsPerPage = 5;
+
+  const indexOfLastEvent = currentPage * eventsPerPage;
+  const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
+  const currentEvents = events ? events.slice(indexOfFirstEvent, indexOfLastEvent) : [];
 
   const handleAddEvent = () => {
     addEventMutation.mutate(newEvent);
   };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const totalPages = events ? Math.ceil(events.length / eventsPerPage) : 1;
 
   return (
     <Box>
@@ -33,12 +45,25 @@ const Index = () => {
               {error.message}
             </Alert>
           )}
-          {events && events.map(event => (
+          {currentEvents.map(event => (
             <Box key={event.id} p={5} shadow="md" borderWidth="1px">
               <Heading fontSize="xl">{event.name}</Heading>
               <Text mt={4}>{event.description}</Text>
             </Box>
           ))}
+          <Stack direction="row" spacing={4} mt={4}>
+            <Button onClick={() => handlePageChange(currentPage - 1)} isDisabled={currentPage === 1}>
+              Previous
+            </Button>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <Button key={index + 1} onClick={() => handlePageChange(index + 1)} isActive={currentPage === index + 1}>
+                {index + 1}
+              </Button>
+            ))}
+            <Button onClick={() => handlePageChange(currentPage + 1)} isDisabled={currentPage === totalPages}>
+              Next
+            </Button>
+          </Stack>
           <Box>
             <Heading size="md">Add New Event</Heading>
             <input
