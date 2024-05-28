@@ -30,9 +30,10 @@ const Index = () => {
       <Flex as="nav" bg="blue.500" color="white" padding={4}>
         <HStack spacing={8}>
           <Heading size="md">Brand</Heading>
-          <Link href="#home" fontSize="lg">Home</Link>
-          <Link href="#about" fontSize="lg">About</Link>
-          <Link href="#contact" fontSize="lg">Contact</Link>
+          <Link as={RouterLink} to="/" fontSize="lg">Home</Link>
+          <Link as={RouterLink} to="/about" fontSize="lg">About</Link>
+          <Link as={RouterLink} to="/contact" fontSize="lg">Contact</Link>
+          <Link as={RouterLink} to="/venues" fontSize="lg">Venues</Link> {/* Added Venues link */}
         </HStack>
         <Spacer />
       </Flex>
