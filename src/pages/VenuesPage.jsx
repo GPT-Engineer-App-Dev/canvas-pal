@@ -12,17 +12,35 @@ const VenuesPage = () => {
   const [editingVenue, setEditingVenue] = useState(null);
 
   const handleAddVenue = () => {
-    addVenueMutation.mutate(newVenue);
-    setNewVenue({ name: "", location: "", description: "" });
+    addVenueMutation.mutate(newVenue, {
+      onError: (error) => {
+        console.error("Error adding venue:", error);
+      },
+      onSuccess: () => {
+        setNewVenue({ name: "", location: "", description: "" });
+      },
+    });
   };
 
   const handleDeleteVenue = (id) => {
-    deleteVenueMutation.mutate(id);
+    deleteVenueMutation.mutate(id, {
+      onError: (error) => {
+        console.error("Error deleting venue:", error);
+      },
+    });
   };
 
   const handleUpdateVenue = () => {
-    updateVenueMutation.mutate(editingVenue);
-    setEditingVenue(null);
+    if (editingVenue) {
+      updateVenueMutation.mutate(editingVenue, {
+        onError: (error) => {
+          console.error("Error updating venue:", error);
+        },
+        onSuccess: () => {
+          setEditingVenue(null);
+        },
+      });
+    }
   };
 
   return (
