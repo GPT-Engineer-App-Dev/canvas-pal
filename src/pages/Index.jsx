@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Box, Container, Flex, Heading, HStack, Link, Spacer, Text, VStack, Spinner, Alert, AlertIcon, Button, Stack } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-import { useEvents, useAddEvent } from "../integrations/supabase/index.js";
+import { useEvents, useAddEvent, useVenues } from "../integrations/supabase/index.js";
 
 const Index = () => {
   const { data: events, error, isLoading } = useEvents();
+  const { data: venues } = useVenues();
   const addEventMutation = useAddEvent();
   const [newEvent, setNewEvent] = useState({ name: "", date: "", description: "", venue_id: 1 });
   const [currentPage, setCurrentPage] = useState(1);
@@ -89,6 +90,16 @@ const Index = () => {
               value={newEvent.description}
               onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
             />
+            <select
+              value={newEvent.venue_id}
+              onChange={(e) => setNewEvent({ ...newEvent, venue_id: e.target.value })}
+            >
+              {venues && venues.map((venue) => (
+                <option key={venue.id} value={venue.id}>
+                  {venue.name}
+                </option>
+              ))}
+            </select>
             <button onClick={handleAddEvent}>Add Event</button>
           </Box>
         </VStack>
