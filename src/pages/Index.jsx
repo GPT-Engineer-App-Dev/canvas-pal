@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Box, Container, Flex, Heading, HStack, Link, Spacer, Text, VStack, Spinner, Alert, AlertIcon, Button, Stack } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
 import { useEvents, useAddEvent } from "../integrations/supabase/index.js";
 
 const Index = () => {
@@ -47,7 +48,11 @@ const Index = () => {
           )}
           {currentEvents.map(event => (
             <Box key={event.id} p={5} shadow="md" borderWidth="1px">
-              <Heading fontSize="xl">{event.name}</Heading>
+              <Heading fontSize="xl">
+                <Link as={RouterLink} to={`/event/${event.id}`}>
+                  {event.name}
+                </Link>
+              </Heading>
               <Text mt={4}>{event.description}</Text>
             </Box>
           ))}

@@ -93,3 +93,8 @@ export const useAddVenue = () => {
         },
     });
 };
+
+export const useEvent = (eventId) => useQuery({
+    queryKey: ['event', eventId],
+    queryFn: () => fromSupabase(supabase.from('events').select('*').eq('id', eventId).single()),
+});
